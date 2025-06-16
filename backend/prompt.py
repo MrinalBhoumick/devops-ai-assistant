@@ -1,250 +1,281 @@
 def build_prompt(user_question, topic="General"):
     """
-    Builds a prompt using filtered content based on the selected topic.
+    Builds a prompt using filtered content based on the selected topic with extended knowledge base.
     """
     knowledge_base_by_topic = {
         "Kubernetes": """
-🔹 Kubernetes Ecosystem & Core Concepts
-✅ Core Concepts
-Pods: Smallest deployable unit; share network/storage. Init Containers run before app containers. Lifecycle phases: Pending, Running, Succeeded, Failed, Unknown.
-Deployments: Declaratively manage ReplicaSets. Enable rolling updates & rollbacks.
-ReplicaSets: Maintain a stable set of replica Pods.
-StatefulSets: For apps needing persistent ID & storage; stable network IDs.
-DaemonSets: Run one pod per node (e.g., monitoring agents).
-Jobs/CronJobs: For one-off and scheduled tasks.
+🔹 **Kubernetes Core Components**
+✅ **Pods**: Smallest deployable unit. Can have multiple containers sharing storage/network. Lifecycle: Pending, Running, Succeeded, Failed, Unknown.
+✅ **Deployments**: Declaratively manage updates and scale ReplicaSets. Enable rolling updates and rollbacks.
+✅ **ReplicaSets**: Maintain a stable set of replica Pods. Automatically replaced if pods die.
+✅ **StatefulSets**: Provide stable identities and persistent storage for pods. Ideal for stateful apps (e.g., databases).
+✅ **DaemonSets**: Ensure a copy of a pod runs on all (or selected) nodes. Used for logs/metrics agents.
+✅ **Jobs/CronJobs**: One-time (Jobs) or scheduled tasks (CronJobs). Ensure completion of a batch process.
 
-✅ Configuration & Networking
-Services: Stable endpoint for accessing Pods. Types: ClusterIP, NodePort, LoadBalancer.
-Namespaces: Isolate workloads and resources logically.
-ConfigMaps & Secrets: Manage configuration (non-sensitive & sensitive). Secrets are base64-encoded, not encrypted by default.
-Volumes: Ephemeral or Persistent. PVCs bind to PVs.
+🔹 **Configuration & Networking**
+✅ **Services**: Abstractions to expose pods. Types:
+   - ClusterIP: Internal access only.
+   - NodePort: Access via `<NodeIP>:<Port>`.
+   - LoadBalancer: Expose via external load balancer.
+✅ **Namespaces**: Logical isolation within a cluster.
+✅ **ConfigMaps & Secrets**: Store config data (non-sensitive vs sensitive). Secrets base64-encoded by default.
+✅ **Volumes**: Handle persistent data. PVC binds to PV.
 
-✅ Networking
-CNI Plugins: Calico, Flannel, Cilium for pod networking.
-CoreDNS: Provides service discovery.
-Network Policies: Control pod-to-pod communication.
+🔹 **Networking & Discovery**
+✅ **CNI Plugins**: Implement pod networking (e.g., Calico, Flannel).
+✅ **CoreDNS**: Handles service discovery via DNS.
+✅ **Network Policies**: Restrict traffic between pods.
 
-✅ Resource Management
-Requests/Limits: CPU & memory bounds.
-QoS Classes: Guaranteed, Burstable, BestEffort.
+🔹 **Resource Management**
+✅ **Requests & Limits**: Define min/max resource allocation.
+✅ **QoS Classes**: 
+   - Guaranteed: Requests == Limits.
+   - Burstable: Requests < Limits.
+   - BestEffort: No requests/limits.
 """,
 
         "Helm": """
-🔹 Helm Charts & Packaging
-✅ Basics
-Helm: Package manager for Kubernetes.
-Chart: Bundle of templates + values used to deploy K8s resources.
-Templates: Go templating syntax for reusable manifests.
+🔹 **Helm – Kubernetes Package Manager**
+✅ **Concepts**
+- Chart: Package of Kubernetes manifests (YAML + templates).
+- Templates: Go-based templates (`{{ .Values }}`).
+- Values.yaml: Default user configuration.
+✅ **File Structure**
+- Chart.yaml: Metadata.
+- values.yaml: User config.
+- templates/: YAML with templating.
+- _helpers.tpl: Helper templates for reuse.
 
-✅ Key Files
-Chart.yaml: Metadata (name, version, dependencies).
-values.yaml: Default configuration values.
-_helpers.tpl: Define reusable template snippets.
+✅ **Helm Commands**
+- `helm install <release> <chart>`: Install.
+- `helm upgrade --install`: Upgrade or install.
+- `helm template`: Render manifests.
+- `helm lint`: Validate charts.
+- `helm package`: Create `.tgz`.
 
-✅ Commands
-helm install/upgrade/uninstall.
-helm repo add/update/list.
-helm template (render locally), helm lint (validate chart).
-helm package (create .tgz from chart).
-
-✅ Best Practices
-Use defaults in values.yaml.
-Avoid hardcoding.
-Use `.Values`, `.Release`, `.Chart`, `.Capabilities`.
+✅ **Best Practices**
+- Version charts.
+- Keep values configurable.
+- Use `.Values`, `.Chart`, `.Release` smartly.
 """,
 
         "Ingress": """
-🔹 Ingress Controllers & Load Balancing
-✅ Concepts
-Ingress: Expose HTTP/HTTPS routes to services inside the cluster.
-Ingress Controller: Software that implements Ingress (e.g., NGINX, Traefik).
-Annotations: Control rewrites, TLS redirects, rate-limiting, etc.
+🔹 **Ingress & External Traffic**
+✅ **Ingress Concepts**
+- Ingress: Manages external HTTP(S) access to Services.
+- Ingress Controller: Handles Ingress resources (e.g., NGINX, Traefik).
+✅ **Routing**
+- Host-based (example.com).
+- Path-based (/api, /admin).
+✅ **TLS**
+- TLS termination at Ingress level.
+- Cert-manager for automation.
 
-✅ TLS & Routing
-TLS Termination: Offload SSL to the Ingress controller.
-Path-based Routing: Direct traffic by path (e.g., /api, /web).
-Host-based Routing: Route by domain.
+✅ **Annotations**
+- Rewrite targets.
+- Enable rate-limiting.
+- TLS redirection and sticky sessions.
 
-✅ Alternatives
-LoadBalancer: Exposes service externally via cloud provider.
-NodePort: Expose on static port across all nodes.
+✅ **Alternatives**
+- LoadBalancer: Expose via external cloud LB.
+- NodePort: Static port on each node.
 """,
 
         "Autoscaling": """
-🔹 Cluster Autoscaler & Pod Autoscaling
-✅ Autoscalers
-Horizontal Pod Autoscaler (HPA): Scales pods based on CPU/memory/custom metrics.
-Vertical Pod Autoscaler (VPA): Adjusts pod resource requests/limits.
-Cluster Autoscaler: Adds/removes nodes based on scheduling failures.
+🔹 **Kubernetes Autoscaling**
+✅ **Types of Autoscalers**
+- **HPA** (Horizontal Pod Autoscaler): Scales pods based on CPU/memory/custom metrics.
+- **VPA** (Vertical Pod Autoscaler): Adjusts resource requests/limits dynamically.
+- **Cluster Autoscaler**: Scales nodes based on pod scheduling needs.
 
-✅ Scheduling Control
-Node Affinity: Prefer or require pods to be on specific nodes (via labels).
-Taints & Tolerations: Prevent unwanted pods from being scheduled on certain nodes.
-PodDisruptionBudget (PDB): Define voluntary disruption limits.
+✅ **Advanced Scheduling**
+- **Node Affinity**: Prefer/require pods on certain nodes.
+- **Taints & Tolerations**: Prevent scheduling unless tolerated.
+- **PodDisruptionBudget (PDB)**: Limit voluntary disruptions during maintenance.
 """,
 
         "RBAC": """
-🔹 Role-Based Access Control (RBAC)
-✅ Components
-Roles: Namespace-scoped permissions (verbs, resources).
-ClusterRoles: Cluster-wide permissions.
-RoleBindings: Assign Role to subjects within a namespace.
-ClusterRoleBindings: Assign ClusterRole to subjects cluster-wide.
-ServiceAccounts: Used by Pods to authenticate to API server.
+🔹 **Kubernetes RBAC (Role-Based Access Control)**
+✅ **Key Concepts**
+- **Role**: Permissions in a namespace (verbs, resources).
+- **ClusterRole**: Cluster-wide permissions.
+- **RoleBinding**: Bind Role to user/group/service account in a namespace.
+- **ClusterRoleBinding**: Bind ClusterRole cluster-wide.
+- **ServiceAccount**: Used by pods for API access.
 
-✅ Best Practices
-Follow principle of least privilege.
-Audit RBAC with tools like rbac-lookup, rakkess.
+✅ **Best Practices**
+- Least privilege.
+- Use separate accounts per app.
+- Audit with `kubectl auth can-i`, `rbac-lookup`, `rakkess`.
 """,
 
         "Security": """
-🔹 Kubernetes Security Best Practices
-✅ Container Security
-Run containers as non-root.
-Use read-only root file systems.
-Drop unnecessary Linux capabilities via `securityContext.capDrop`.
+🔹 **Kubernetes Security**
+✅ **Container Security**
+- Run as non-root.
+- Use read-only filesystem.
+- Set `securityContext` appropriately.
+- Drop unnecessary Linux capabilities.
 
-✅ Network Security
-Use Network Policies to isolate workloads.
-Use mTLS via Service Mesh (e.g., Istio) for service-to-service encryption.
+✅ **Network Security**
+- Use Network Policies.
+- Enable mTLS with Service Mesh (Istio/Linkerd).
+- Use isolated namespaces.
 
-✅ Secrets Management
-Rotate Secrets & TLS Certs regularly.
-Use SealedSecrets or External Secrets Operator.
-Restrict etcd access (stores all cluster data).
+✅ **Secrets Management**
+- Use SealedSecrets or External Secrets.
+- Enable encryption at rest.
+- Rotate secrets and TLS certificates regularly.
 
-✅ API Server Hardening
-Use RBAC.
-Audit Logs enabled.
-Use Admission Controllers for validation.
-
-✅ Tools
-Trivy: Image/IaC scanning.
-kube-bench: CIS compliance testing.
+✅ **API Server Hardening**
+- Enable audit logs.
+- Limit API exposure.
+- Use admission controllers (e.g., OPA).
 """,
 
         "CI/CD": """
-🔹 CI/CD & GitOps Tools
-✅ Traditional CI/CD
-Jenkins: Scripted or declarative pipelines.
-GitLab CI: Defined via `.gitlab-ci.yml`.
-GitHub Actions: GitHub-native CI/CD with YAML workflows.
+🔹 **CI/CD & GitOps**
+✅ **CI/CD Tools**
+- Jenkins: Groovy pipelines, plugins.
+- GitHub Actions: Native GitHub integration.
+- GitLab CI: `.gitlab-ci.yml` driven.
 
-✅ GitOps
-ArgoCD: Declarative CD tool. Syncs with Git repositories.
-FluxCD: Lightweight GitOps tool with source and kustomize controllers.
-Supports Canary/Blue-Green deployments via Argo Rollouts.
+✅ **GitOps Tools**
+- ArgoCD: Declarative Git-based deployment; auto-sync support.
+- FluxCD: Lightweight GitOps; built-in image automation.
 
-✅ Tools Integration
-Helm & Kustomize supported in both ArgoCD and Flux.
+✅ **Patterns**
+- Canary and Blue/Green deployments.
+- Helm/Kustomize support.
+- Integrate Secrets/Infra as Code with pipelines.
 """,
 
         "Monitoring": """
-🔹 Observability & Alerting
-✅ Monitoring Stack
-Prometheus: Metrics collection. Uses PromQL for querying.
-kube-state-metrics: Exposes K8s object states as metrics.
-Node Exporter: Host-level metrics.
+🔹 **Monitoring in Kubernetes**
+✅ **Metrics Collection**
+- Prometheus: Core metrics + PromQL.
+- kube-state-metrics: K8s object states as metrics.
+- Node Exporter: Host-level metrics.
 
-✅ Visualization & Alerts
-Grafana: Dashboard visualization; alerting support.
-Alertmanager: Group, throttle, and route alerts (email, Slack, etc).
+✅ **Dashboards & Alerts**
+- Grafana: Visualize Prometheus data.
+- Alertmanager: Deduplicate and route alerts.
 
-✅ Service Mesh Monitoring
-Integrate metrics from Istio/Linkerd sidecars.
+✅ **Service Mesh Observability**
+- Istio/Linkerd expose per-service metrics.
+- Jaeger/Zipkin used for tracing.
 """,
 
         "Logging": """
-🔹 Centralized Logging & Tracing
-✅ Logging
-EFK Stack: Elasticsearch, Fluentd, Kibana.
-Loki: Prometheus-style logging backend.
-Fluent Bit: Lightweight logging agent for edge.
+🔹 **Centralized Logging**
+✅ **Stacks**
+- **EFK**: Elasticsearch, Fluentd, Kibana.
+- **Loki**: Prometheus-style logging.
+- **Fluent Bit**: Lightweight log forwarder.
 
-✅ Tracing
-Jaeger: OpenTracing compatible distributed tracing.
-OpenTelemetry: Unified observability (metrics, logs, traces).
+✅ **Distributed Tracing**
+- Jaeger: Trace request flows across services.
+- OpenTelemetry: Unified API for metrics, logs, traces.
 """,
 
         "Secrets": """
-🔹 Secrets Management
-✅ Kubernetes Secrets: Base64-encoded; use RBAC & encryption at rest.
-✅ HashiCorp Vault: Dynamic secrets, policy-based access, secret leasing.
-✅ SealedSecrets: Encrypt secrets using public key—safe to store in Git.
-✅ External Secrets Operator: Sync secrets from cloud providers or Vault.
+🔹 **Secrets Handling**
+✅ **Kubernetes Secrets**
+- Base64-encoded.
+- Use RBAC & encryption at rest.
 
-✅ Best Practices
-Don’t commit secrets to Git.
-Use short TTL and rotate regularly.
-Audit secret usage and access logs.
+✅ **Tools**
+- SealedSecrets: Public-key encryption, Git-safe.
+- External Secrets Operator: Pull from AWS/GCP/Vault.
+- Vault: Dynamic secrets, policy-based access.
+
+✅ **Best Practices**
+- Don’t expose secrets in YAML or Git.
+- Rotate regularly.
+- Use short TTL.
 """,
 
         "ServiceMesh": """
-🔹 Service Mesh & Service-to-Service Communication
-✅ Core Tools
-Istio: Rich features (traffic shaping, telemetry, mTLS).
-Linkerd: Simpler and lightweight alternative.
-Consul Connect: Integrated with HashiCorp ecosystem.
+🔹 **Service Mesh**
+✅ **Core Mesh Tools**
+- **Istio**: mTLS, traffic shifting, observability.
+- **Linkerd**: Simpler, lightweight.
+- **Consul Connect**: Works well with HashiCorp tools.
 
-✅ Components
-Sidecars (Envoy): Injected proxies per pod.
-mTLS: Encrypted service communication.
-Traffic Shifting: Canary, A/B testing, retries, timeouts.
+✅ **Features**
+- Sidecar proxies (Envoy).
+- mTLS encryption.
+- Canary/A-B testing with traffic shifting.
 
-✅ Observability
-Built-in metrics, tracing, and dashboards.
-Integrate with Grafana/Prometheus.
+✅ **Observability**
+- Integrated metrics, tracing.
+- Native dashboards in Prometheus/Grafana.
 """,
 
         "Containers": """
-🔹 Container Tooling & Runtimes
-✅ Docker: Build, run, and manage containers.
-✅ Podman: Docker alternative; daemonless & rootless support.
-✅ BuildKit: Improved build performance, caching, concurrency.
-✅ Docker Compose: Define multi-container apps in YAML.
+🔹 **Containers & Runtimes**
+✅ **Container Tools**
+- Docker: Core tool for container lifecycle.
+- Podman: Rootless Docker alternative.
+- BuildKit: Parallelized, cache-optimized builds.
+- Docker Compose: Multi-container setups.
 
-✅ Runtimes
-Containerd: Core runtime used in Kubernetes.
-CRI-O: Lightweight Kubernetes container runtime.
+✅ **Runtimes**
+- Containerd: Runtime used by Kubernetes.
+- CRI-O: Lightweight OCI-compliant runtime.
 """,
 
         "IaC": """
-🔹 Infrastructure as Code (IaC)
-✅ Terraform: Declarative IaC for cloud infrastructure; supports modules and state.
-✅ Pulumi: IaC using familiar languages like Python, TS, Go.
-✅ Ansible: Procedural config management; great for server provisioning.
-✅ AWS CloudFormation: AWS-native declarative tool.
+🔹 **Infrastructure as Code**
+✅ **Popular Tools**
+- Terraform: Modular, stateful infra management.
+- Pulumi: Code-based IaC with typed languages.
+- Ansible: Agentless config management.
+- AWS CloudFormation: AWS-native IaC.
 
-✅ Best Practices
-Use version control for all IaC.
-Separate dev/stage/prod using workspaces or environments.
-Use linters (tflint), scanners (checkov).
+✅ **Best Practices**
+- Version control all infra.
+- Use `checkov`, `tflint` for scanning/linting.
+- Use workspaces for stage separation.
 """,
 
         "Compliance": """
-🔹 Policy & Compliance in Kubernetes
-✅ OPA/Gatekeeper: Define and enforce policies using Rego language.
-✅ Kyverno: Kubernetes-native policy engine; easier syntax than OPA.
-✅ kube-bench: Scan K8s clusters against CIS Benchmarks.
-✅ Trivy: Scan images, SBOMs, IaC for vulnerabilities.
+🔹 **Compliance & Policy**
+✅ **Tools**
+- **OPA/Gatekeeper**: Write policies in Rego.
+- **Kyverno**: Easier syntax, native to K8s.
+- **kube-bench**: CIS benchmark checker.
+- **Trivy**: Scan containers, IaC, SBOMs.
 
-✅ Use Cases
-Deny root containers, enforce labels/annotations, image registry restrictions.
+✅ **Use Cases**
+- Enforce labeling, prohibit root, restrict registries.
+- Gatekeeper for runtime policy enforcement.
 """,
 
         "Artifacts": """
-🔹 Artifact Repositories
-✅ JFrog Artifactory: Enterprise-grade artifact manager.
-✅ Nexus Repository: Supports Docker, Maven, NuGet, etc.
-✅ Harbor: OCI-compliant container registry with vulnerability scanning.
+🔹 **Artifact Repositories**
+✅ **Tools**
+- **JFrog Artifactory**: Enterprise-grade repo.
+- **Nexus**: Supports Docker, Maven, etc.
+- **Harbor**: Container registry with scanning.
 
-✅ Features
-Role-based access, retention policies, proxying public registries.
-Integrates with CI tools for build pipelines.
+✅ **Features**
+- RBAC, retention, proxy public registries.
+- Integrates with CI/CD for secure artifact flow.
 """,
 
-        "General": """🔹 Full DevOps Study Material Summary
-Includes Kubernetes concepts, Helm, CI/CD, Observability, Secrets Management, Container Runtimes, IaC tools, GitOps tools, and policy/compliance practices. Use this for an all-in-one review session.
+        "General": """
+🔹 **Full DevOps & Kubernetes Study Guide**
+✅ Kubernetes: Core concepts, deployments, services, scaling, networking.
+✅ Helm: Charts, templating, best practices.
+✅ CI/CD: GitHub Actions, ArgoCD, GitOps strategies.
+✅ Monitoring & Logging: Prometheus, Grafana, EFK, Loki.
+✅ Secrets Management: Vault, SealedSecrets, External Secrets.
+✅ Security: RBAC, Network Policies, API server hardening.
+✅ IaC: Terraform, CloudFormation, Pulumi.
+✅ Compliance: Kyverno, Gatekeeper, CIS Benchmarks.
+✅ Service Mesh: Istio, Linkerd, observability and security.
+✅ Containerization: Docker, CRI-O, Podman.
 """
     }
 
