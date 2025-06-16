@@ -4,15 +4,13 @@ const questionInput = document.getElementById("question");
 const topicSelect = document.getElementById("topic");
 const answerBox = document.getElementById("answer");
 const loading = document.getElementById("loading");
-const fileInput = document.getElementById("pdfFile");
 
 askBtn.addEventListener("click", async () => {
   const question = questionInput.value.trim();
   const topic = topicSelect.value;
-  const file = fileInput.files[0];
 
-  if (!question && !file) {
-    alert("Please enter a question or upload a PDF.");
+  if (!question) {
+    alert("Please enter a question.");
     return;
   }
 
@@ -20,25 +18,10 @@ askBtn.addEventListener("click", async () => {
   loading.classList.remove("hidden");
 
   try {
-    let pdfBase64 = null;
-    let filename = null;
-
-    if (file) {
-      if (file.type !== "application/pdf") {
-        alert("Only PDF files are allowed.");
-        loading.classList.add("hidden");
-        return;
-      }
-
-      const fileContent = await file.arrayBuffer();
-      pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(fileContent)));
-      filename = file.name;
-    }
-
     const response = await fetch("https://wi8e1yzkm5.execute-api.ap-south-1.amazonaws.com/prod/claude", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, topic, pdfBase64, filename }),
+      body: JSON.stringify({ question, topic }),
     });
 
     if (!response.ok) throw new Error("Claude API failed.");
