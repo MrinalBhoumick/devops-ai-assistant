@@ -43,9 +43,10 @@ label {
   color: #2e3c50;
 }
 
-/* Select and textarea */
+/* Select, textarea, and input[type="file"] */
 select,
-textarea {
+textarea,
+input[type="file"] {
   width: 100%;
   padding: 1rem;
   border-radius: 10px;
@@ -53,10 +54,12 @@ textarea {
   font-size: 1rem;
   transition: border 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
+  background-color: #fff;
 }
 
 select:focus,
-textarea:focus {
+textarea:focus,
+input[type="file"]:focus {
   border-color: #66afe9;
   outline: none;
   box-shadow: 0 0 6px rgba(102, 175, 233, 0.6);
@@ -141,6 +144,31 @@ button:active {
 
 #copyBtn:hover {
   background: #1e7e34;
+}
+
+/* PDF Upload Styling */
+input[type="file"] {
+  cursor: pointer;
+  background-color: #f4f6f9;
+  border: 2px dashed #ced4da;
+  padding: 1rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+input[type="file"]::file-selector-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-right: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #0056b3;
 }
 
 /* Responsive improvements */

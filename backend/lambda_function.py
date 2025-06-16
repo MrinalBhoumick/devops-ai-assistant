@@ -12,7 +12,7 @@ logger.setLevel(logging.INFO)
 bedrock_runtime = boto3.client("bedrock-runtime", region_name="ap-south-1")
 
 # Constants
-MODEL_ID = "arn:aws:bedrock:Region:1234XXX:inference-profile/apac.anthropic.claude-sonnet-4-20250514-v1:0"
+MODEL_ID = "arn:aws:bedrock:ap-south-1:207567766326:inference-profile/apac.anthropic.claude-sonnet-4-20250514-v1:0"
 MAX_RETRIES = 7
 RETRY_DELAY_SECONDS = 3
 MAX_TOKENS = 25000

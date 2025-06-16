@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div class="app-container">
+  <main class="app-container">
     <h1>🧠 DevOps AI Assistant</h1>
 
-    <div class="form-group">
+    <section class="form-group">
       <label for="topic">Choose a Topic:</label>
-      <select id="topic">
+      <select id="topic" aria-label="Select DevOps topic">
         <option value="General">General</option>
         <option value="Kubernetes">Kubernetes</option>
         <option value="Helm">Helm</option>
@@ -30,23 +30,28 @@
         <option value="Compliance">Compliance</option>
         <option value="Artifacts">Artifacts</option>
       </select>
-    </div>
+    </section>
 
-    <div class="form-group">
+    <section class="form-group">
       <label for="question">Enter Your Question:</label>
-      <textarea id="question" placeholder="E.g., How do ConfigMaps and Secrets differ?"></textarea>
-    </div>
+      <textarea id="question" placeholder="E.g., How do ConfigMaps and Secrets differ?" aria-label="Enter your DevOps question"></textarea>
+    </section>
+
+    <section class="form-group">
+      <label for="pdfFile">Upload PDF (optional):</label>
+      <input type="file" id="pdfFile" accept="application/pdf" aria-label="Upload a PDF file (optional)"/>
+    </section>
 
     <button id="askBtn">Ask Claude</button>
 
-    <div id="loading" class="hidden">⏳ Claude is thinking...</div>
+    <div id="loading" class="hidden" role="status" aria-live="polite">⏳ Claude is thinking...</div>
 
-    <div class="answer-box">
+    <section class="answer-box" aria-label="Claude's Answer Section">
       <h2>Answer</h2>
-      <pre id="answer"></pre>
-      <button id="copyBtn">📋 Copy</button>
-    </div>
-  </div>
+      <pre id="answer" aria-live="polite"></pre>
+      <button id="copyBtn" aria-label="Copy answer to clipboard">📋 Copy</button>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
