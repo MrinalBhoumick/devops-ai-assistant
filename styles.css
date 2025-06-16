@@ -1,0 +1,90 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+select, textarea {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+#loading {
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.hidden {
+  display: none;
+}
+
+.answer-box {
+  margin-top: 2rem;
+  position: relative;
+}
+
+#answer {
+  background: #f9f9f9;
+  padding: 1rem;
+  white-space: pre-wrap;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+#copyBtn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #28a745;
+}
+
+#copyBtn:hover {
+  background: #1e7e34;
+}

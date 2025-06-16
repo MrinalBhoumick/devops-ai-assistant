@@ -1,0 +1,10 @@
+curl --location --request POST 'https://<api-id>.execute-api.<region>.amazonaws.com/prod/claude' \
+--header 'User-Agent: Apidog/1.0.0 (https://apidog.com)' \
+--header 'Content-Type: application/json' \
+--header 'Accept: */*' \
+--header 'Host: <api-id>.execute-api.ap-south-1.amazonaws.com' \
+--header 'Connection: keep-alive' \
+--data-raw '{
+        "question": "What are the core components of Kubernetes?",
+        "topic": "Kubernetes Core Concepts"
+      }'

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Claude DevOps Exam Assistant</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="app-container">
+    <h1>🧠 DevOps AI Assistant</h1>
+
+    <div class="form-group">
+      <label for="topic">Choose a Topic:</label>
+      <select id="topic">
+        <option value="General">General</option>
+        <option value="Kubernetes">Kubernetes</option>
+        <option value="Helm">Helm</option>
+        <option value="Ingress">Ingress</option>
+        <option value="Autoscaling">Autoscaling</option>
+        <option value="RBAC">RBAC</option>
+        <option value="Security">Security</option>
+        <option value="CI/CD">CI/CD</option>
+        <option value="Monitoring">Monitoring</option>
+        <option value="Logging">Logging</option>
+        <option value="Secrets">Secrets</option>
+        <option value="ServiceMesh">ServiceMesh</option>
+        <option value="Containers">Containers</option>
+        <option value="IaC">IaC</option>
+        <option value="Compliance">Compliance</option>
+        <option value="Artifacts">Artifacts</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="question">Enter Your Question:</label>
+      <textarea id="question" placeholder="E.g., How do ConfigMaps and Secrets differ?"></textarea>
+    </div>
+
+    <button id="askBtn">Ask Claude</button>
+
+    <div id="loading" class="hidden">⏳ Claude is thinking...</div>
+
+    <div class="answer-box">
+      <h2>Answer</h2>
+      <pre id="answer"></pre>
+      <button id="copyBtn">📋 Copy</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
