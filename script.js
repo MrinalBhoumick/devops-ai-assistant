@@ -18,7 +18,7 @@ askBtn.addEventListener("click", async () => {
   loading.classList.remove("hidden");
 
   try {
-    const response = await fetch("https://wi8e1yzkm5.execute-api.ap-south-1.amazonaws.com/prod/claude", {
+    const response = await fetch("https://2hx63mzf4m.execute-api.ap-south-1.amazonaws.com/prod/claude", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question, topic }),
